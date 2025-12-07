@@ -42,3 +42,13 @@ python3 phishing_detector.py
  ┣ 📜 phishing_detector.py
  
   ┗ 📜 README.md
+
+## 🤝 Contributing
+
+Feel free to fork this repo and improve the UI or add new features!
+
+---
+
+## 📜 License
+
+This project is **free to use** for learning and personal purposes.
