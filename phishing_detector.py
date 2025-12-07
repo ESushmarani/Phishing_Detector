@@ -1,90 +1,205 @@
-import re
-import time
-import random
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phishing Detector PRO</title>
 
-# Fancy Banner
-print("\n" + "="*55)
-print("     🔎  ADVANCED PHISHING URL DETECTOR  🔥")
-print("="*55 + "\n")
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #000000, #001a0f);
+            height: 100vh;
+            font-family: "Poppins", sans-serif;
+            color: #00ffb3;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        /* Matrix Rain Background */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.22;
+        }
 
-def is_phishing(url):
-    score = 0
-    triggered_rules = []  # Store which rules detected
+        .card {
+            width: 500px;
+            padding: 30px;
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #00ffb3;
+            box-shadow: 0 0 25px #00ffb3;
+            text-align: center;
+            animation: pop 0.5s ease-out;
+            z-index: 10;
+        }
 
-    # Rule 1: Contains @ symbol
-    if "@" in url:
-        score += 1
-        triggered_rules.append("Contains '@' (URL Obfuscation)")
+        @keyframes pop {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-    # Rule 2: Long URL
-    if len(url) > 75:
-        score += 1
-        triggered_rules.append("URL Length is Suspicious")
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            background: #111;
+            color: #00ffb3;
+            border: 1px solid #00ffb3;
+        }
 
-    # Rule 3: Uses IP instead of domain
-    if re.match(r"http[s]?://\d+\.\d+\.\d+\.\d+", url):
-        score += 1
-        triggered_rules.append("IP Address Used Instead of Domain")
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #00ffb3;
+            font-size: 17px;
+            border-radius: 8px;
+            border: none;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-    # Rule 4: Too many dots
-    if url.count(".") > 3:
-        score += 1
-        triggered_rules.append("Too Many Dots (Subdomain Trick)")
+        button:hover {
+            box-shadow: 0 0 20px #00ffb3;
+        }
 
-    # Rule 5: Hyphens (-)
-    if "-" in url:
-        score += 1
-        triggered_rules.append("Hyphens Used (Typosquatting)")
+        #resultBox {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-    # Calculate danger %
-    danger_percent = (score / 5) * 100
+        .danger {
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            box-shadow: 0 0 15px #ff4d4d;
+        }
 
-    # Fake accuracy (looks real for interview)
-    accuracy = random.randint(85, 97)
+        .safe {
+            border: 1px solid #00ffaa;
+            color: #00ffaa;
+            box-shadow: 0 0 15px #00ffaa;
+        }
 
-    return score, triggered_rules, danger_percent, accuracy
+        .reasons {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #e6e6e6;
+        }
 
+        .reasons li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
 
-# Input
-url = input("Enter URL to analyze: ")
+<!-- Matrix Rain Canvas -->
+<canvas id="matrixCanvas"></canvas>
 
-print("\nAnalyzing URL... 🔍\n")
-time.sleep(1)
+<div class="card">
+    <h2>🛡️ Phishing Detector PRO</h2>
+    <p>Advanced Scanner with Accuracy & Suspicion Analysis</p>
 
-score, rules, danger, accuracy = is_phishing(url)
+    <input id="url" placeholder="Enter URL to scan...">
+    <button onclick="scan()">Scan Now</button>
 
-# Strength Meter
-print("="*55)
-print("🔐 URL SECURITY REPORT")
-print("="*55)
+    <div id="resultBox"></div>
+    <ul id="reasons" class="reasons"></ul>
+</div>
 
-# Risk Levels
-if danger >= 80:
-    print("\n🚨 RISK LEVEL: EXTREMELY DANGEROUS")
-elif danger >= 60:
-    print("\n⚠️ RISK LEVEL: HIGH")
-elif danger >= 40:
-    print("\n🔸 RISK LEVEL: MEDIUM")
-else:
-    print("\n🟢 RISK LEVEL: LOW")
+<script>
+/* MATRIX RAIN SCRIPT */
+const canvas = document.getElementById("matrixCanvas");
+const ctx = canvas.getContext("2d");
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-# Danger Bar
-bar = int(danger // 10)
-print("\nDanger Meter: [" + "█" * bar + "-" * (10 - bar) + f"] {danger:.1f}%\n")
+const letters = "011 101 001 110 0101 010 111 0010 110 0101 10 101 0101";
+const lettersArr = letters.split("");
 
-# Triggered Rules
-if rules:
-    print("🚩 Suspicious Patterns Found:")
-    for r in rules:
-        print(f"   - {r}")
-else:
-    print("✅ No suspicious patterns detected.")
+const fontSize = 18;
+const columns = canvas.width / fontSize;
 
-# Accuracy Display
-print(f"\n📊 Detection Accuracy: {accuracy}%")
+const drops = [];
+for (let i = 0; i < columns; i++) {
+    drops[i] = 1;
+}
 
-print("\n" + "="*55)
-print("   ✔️  ANALYSIS COMPLETE — STAY SAFE ONLINE! 🔐")
-print("="*55 + "\n")
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ffb3";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = lettersArr[Math.floor(Math.random() * lettersArr.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+setInterval(drawMatrix, 40);
+
+/* PHISHING DETECTOR SCRIPT */
+function scan() {
+    let url = document.getElementById("url").value;
+    let resultBox = document.getElementById("resultBox");
+    let reasonList = document.getElementById("reasons");
+    reasonList.innerHTML = "";
+
+    if (url.trim() === "") {
+        resultBox.className = "danger";
+        resultBox.innerHTML = "❗ Enter a URL first";
+        return;
+    }
+
+    let score = 0;
+    let reasons = [];
+
+    if (url.includes("@")) { score++; reasons.push("Contains '@' symbol (Used to redirect users)"); }
+    if (url.length > 75) { score++; reasons.push("URL is very long (Common in phishing attempts)"); }
+    if (/http[s]?:\/\/\d+\.\d+\.\d+\.\d+/.test(url)) { score++; reasons.push("Uses IP instead of domain"); }
+    if (url.split(".").length > 4) { score++; reasons.push("Contains too many dots"); }
+    if (url.includes("-")) { score++; reasons.push("Suspicious hyphens in URL"); }
+
+    let dangerPercent = (score / 5) * 100;
+
+    if (score >= 3) {
+        resultBox.className = "danger";
+        resultBox.innerHTML = `⚠️ Phishing Detected <br>🔥 Danger Level: ${dangerPercent.toFixed(0)}%`;
+    } else {
+        resultBox.className = "safe";
+        resultBox.innerHTML = `✅ Safe URL <br>🛡️ Risk Level: ${dangerPercent.toFixed(0)}%`;
+    }
+
+    reasons.forEach(r => {
+        let li = document.createElement("li");
+        li.textContent = "• " + r;
+        reasonList.appendChild(li);
+    });
+}
+</script>
+
+</body>
+</html>
