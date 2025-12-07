@@ -21,9 +21,10 @@ Lightweight & beginner‑friendly
 - Too Many Dots	Suspicious redirect patterns
 - Hyphens -	Often used in fake domains
 
-🧪 Example Output
-Enter URL: http://123.55.22.11-login-secure-update.com
+## 📸 Screenshot
+  <img width="478" height="389" alt="Screenshot 2025-12-07 143154" src="https://github.com/user-attachments/assets/8f64de90-3244-4d5e-b0fe-a3994221db40" />
 
+  
 ⚠️ Result: High Risk — Phishing URL Detected  
 🚨 Danger Level: 80%  
 🎯 Accuracy Estimate: 78%  
@@ -31,7 +32,7 @@ Enter URL: http://123.55.22.11-login-secure-update.com
 
 # How to Run
 1. Clone the project
-git clone https://github.com/YOUR-USERNAME/phishing-url-detector
+git clone https://esushmarani.github.io/Phishing_Detector/
 
 2. Run the script
 python3 phishing_detector.py
